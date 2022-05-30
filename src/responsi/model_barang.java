@@ -16,7 +16,7 @@ import javax.swing.JOptionPane;
  */
 public class model_barang {
     static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
-    static final String DB_URL = "jdbc:mysql://localhost/barang";
+    static final String DB_URL = "jdbc:mysql://localhost/responsi_prakpbo";
     static final String USER = "root";
     static final String PASS = "";
     
@@ -40,14 +40,15 @@ public class model_barang {
         try{
             int jmlData = 0;
             
-            String data[][] = new String[getBanyakData()][3]; 
+            String data[][] = new String[getBanyakData()][4]; 
             
             String query = "SELECT * FROM barang"; 
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()){
-                data[jmlData][0] = resultSet.getString("nama"); //harus sesuai nama kolom di mysql
-                data[jmlData][1] = String.valueOf(resultSet.getDouble("massa"));             
-                data[jmlData][2] = String.valueOf(resultSet.getDouble("harga"));
+                data[jmlData][0] = resultSet.getString("id"); //harus sesuai nama kolom di mysql
+                data[jmlData][1] = resultSet.getString("nama");
+                data[jmlData][2] = String.valueOf(resultSet.getDouble("massa"));             
+                data[jmlData][3] = String.valueOf(resultSet.getDouble("harga"));
                 jmlData++;
             }
             return data;
@@ -64,16 +65,17 @@ public class model_barang {
         int jmlData=0;
         
         try {
-           String query = "SELECT * FROM barang WHERE nama='" + Nama+"'"; 
+           String query = "SELECT * FROM barang WHERE nama='" + Nama+"'";
+           statement=koneksi.createStatement();
            System.out.println(Nama + " " + Massa + " " + Harga);
            ResultSet resultSet = statement.executeQuery(query);
            
            while (resultSet.next()){ 
                 jmlData++;
             }
-            
+            statement.close();
             if (jmlData==0) {
-                query = "INSERT INTO barang(id,nama,massa,harga) VALUES('','"+Nama+"','"+Massa+"','"+Harga+"')";
+                query = "INSERT INTO barang(nama,massa,harga) VALUES('"+Nama+"','"+Massa+"','"+Harga+"')";
            
                 statement = (Statement) koneksi.createStatement();
                 statement.executeUpdate(query); //execute querynya
@@ -89,10 +91,10 @@ public class model_barang {
         }
     }
     
-    public void updateData(String Nama, double Massa, double Harga){
+    public void updateData(String id, String Nama, double Massa, double Harga){
         int jmlData=0;
          try {
-           String query = "SELECT * FROM barang WHERE nama='" + Nama+"'"; 
+           String query = "SELECT * FROM barang WHERE id='" + id+"'"; 
            ResultSet resultSet = statement.executeQuery(query);
            
            while (resultSet.next()){ 
@@ -100,7 +102,7 @@ public class model_barang {
             }
            
              if (jmlData==1) {
-                query = "UPDATE barang SET massa='" + Massa + "', harga='" + Harga + "' WHERE nama='" + Nama+"'"; 
+                query = "UPDATE barang SET nama='" + Nama + "', massa='" + Massa + "', harga='" + Harga + "' WHERE id='" + id+"'"; 
                 statement = (Statement) koneksi.createStatement();
                 statement.executeUpdate(query); //execute querynya
                 System.out.println("Berhasil diupdate");
@@ -134,9 +136,28 @@ public class model_barang {
         }
     }
     
-    public void deleteData (String Nama) {
+    public String[] detailBarang(String id) {
         try{
-            String query = "DELETE FROM barang WHERE nama = '"+Nama+"'";
+            String data[] = new String[4];
+            String query = "SELECT * FROM barang WHERE id = '"+id+"'";            
+            ResultSet resultSet = statement.executeQuery(query);
+            while (resultSet.next()){
+                data[0] = resultSet.getString("id"); //harus sesuai nama kolom di mysql
+                data[1] = resultSet.getString("nama");                
+                data[2] = Double.toString(resultSet.getDouble("massa"));
+                data[3] = Double.toString(resultSet.getDouble("harga"));  
+            }
+            return data;
+        }catch(SQLException sql) {
+            System.out.println(sql.getMessage());
+            System.out.println("SQL Error");
+            return null;
+        }
+    }
+    
+    public void deleteData (String id) {
+        try{
+            String query = "DELETE FROM barang WHERE id = '"+id+"'";
             statement = koneksi.createStatement();
             statement.executeUpdate(query);
             JOptionPane.showMessageDialog(null, "Berhasil Dihapus");
