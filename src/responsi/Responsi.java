@@ -16,6 +16,8 @@ public class Responsi {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        viewmain_menu vmm=new viewmain_menu ();
+        mainmenu_controller mmc=new mainmenu_controller(vmm);
     }
     
 }
