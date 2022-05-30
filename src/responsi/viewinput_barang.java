@@ -59,7 +59,35 @@ public class viewinput_barang extends JFrame{
         btnKembali.setBounds(10, 130, 160, 20);
     }
     
-    
+    public String getTfnama() {
+        String nama = tfnama.getText();
+        return nama;
+    }
+
+    public Double getTfmassa() {
+        if(tfmassa.getText().isEmpty()){
+            double massa = 0;
+            return massa;
+        }
+        else{
+            double massa = Double.parseDouble(tfmassa.getText());
+            return massa;
+        }
+            
+        
+    }
+
+    public Double getTfharga() {
+        if(tfharga.getText().isEmpty()){
+            double harga = 0;
+            return harga;
+        }
+        else{
+            double harga = Double.parseDouble(tfharga.getText());
+            return harga;
+        }
+        
+    }
     
 }
 
